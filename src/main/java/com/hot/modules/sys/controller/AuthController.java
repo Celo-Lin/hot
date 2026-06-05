@@ -30,7 +30,6 @@ public class AuthController {
         return Result.success(token);
     }
 
-
     @PostMapping("/logout")
     public Result<Void> logout(@RequestHeader(value = AuthConstant.TOKEN_HEADER, required = false) String token) {
         sysUserService.logout(token);
