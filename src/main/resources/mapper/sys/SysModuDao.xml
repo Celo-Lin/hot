@@ -183,7 +183,6 @@
 
 	<select id="menuModu" resultMap="menuModuMap" parameterType="map">
 		SELECT
-			DISTINCT
 			b.`id` AS 'menuId',
 			b.`parent_id` AS 'parentId',
 			b.`title` AS 'menu',
@@ -192,6 +191,7 @@
 		FROM `sys_modu` a
 		LEFT JOIN `sys_menu` b ON b.`id` = a.`menu_id` AND b.`del_flag` = 0
 		WHERE a.`del_flag` = 0
+		GROUP BY b.`id`, a.`id`
 		ORDER BY b.sort ASC, a.sort ASC
 	</select>
 

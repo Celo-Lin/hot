@@ -9,7 +9,7 @@ import com.hot.common.util.RedisUtils;
 import com.hot.modules.sys.dao.SysUserDao;
 import com.hot.modules.sys.entity.SysUser;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.hot.common.page.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -172,8 +172,25 @@ public class SysUserService {
         u.setErrorCount(0);
         u.setLoginflag(1);
         sysUserDao.updateError(u);
-        u.setToken(token);
-        redisUtils.set(AuthConstant.TOKEN_KEY_PREFIX + token, u, AuthConstant.TOKEN_EXPIRE.getSeconds());
+
+        SysUser u2 = new SysUser();
+        u2.setId(u.getId());
+        u2.setName(u.getName());
+        u2.setLoginname(u.getLoginname());
+        u2.setPercode(u.getPercode());
+        u2.setDepname(u.getDepname());
+        u2.setUserType(u.getUserType());
+        u2.setLogindate(u.getLogindate());
+        u2.setMenurole(u.getMenurole());
+        u2.setModurole(u.getModurole());
+        u2.setButtrole(u.getButtrole());
+        u2.setDatarole(u.getDatarole());
+        u2.setButtlist(u.getButtlist());
+        u2.setDatalist(u.getDatalist());
+        u2.setMenulist(u.getMenulist());
+        u2.setModulist(u.getModulist());
+
+        redisUtils.set(AuthConstant.TOKEN_KEY_PREFIX + token, u2, AuthConstant.TOKEN_EXPIRE.getSeconds());
         return token;
     }
 

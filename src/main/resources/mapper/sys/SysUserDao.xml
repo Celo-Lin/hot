@@ -10,8 +10,6 @@
         <result property="depname" column="depname"/>
         <result property="userType" column="user_type"/>
         <result property="userTypes" column="user_types"/>
-        <result property="acSet" column="acSet"/>
-        <result property="acSets" column="acSets"/>
         <result property="loginflag" column="login_flag"/>
         <result property="menurole" column="menu_role"/>
         <result property="modurole" column="modu_role"/>
@@ -42,8 +40,6 @@
             a.depname,
             a.user_type,
             ad.label AS 'user_types',
-            a.ac_set AS 'acSet',
-            a1.label AS 'acSets',
             a.login_flag,
             a.menu_role,
             a.modu_role,
@@ -57,7 +53,6 @@
             DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') AS 'createTime'
         FROM `sys_user` a
         LEFT JOIN `sys_dict` ad ON ad.value = a.user_type AND ad.type = 'user_type' AND ad.del_flag = 0
-        LEFT JOIN `sys_dict` a1 ON a1.value = a.ac_set AND ad.type = 'ac_set' AND ad.del_flag = 0
         LEFT JOIN `sys_user_butt` b ON b.`user_id` = a.`id`
         LEFT JOIN `sys_user_data` c ON c.`user_id` = a.`id`
         LEFT JOIN `sys_user_menu` d ON d.`user_id` = a.`id`
@@ -110,7 +105,6 @@
             depname,
             user_type,
             login_flag,
-            ac_set,
             menu_role,
             modu_role,
             butt_role,
@@ -129,7 +123,6 @@
             #{depname},
             #{userType},
             #{loginflag},
-            #{acSet},
             #{menurole},
             #{modurole},
             #{buttrole},
@@ -145,11 +138,13 @@
     <update id="update">
         UPDATE `sys_user` SET
             `name` = #{name},
+            <if test="password != null and password != ''">
+                pass_word = #{password},
+            </if>
             per_code = #{percode},
             depname = #{depname},
             user_type = #{userType},
             login_flag = #{loginflag},
-            ac_set = #{acSet},
             menu_role = #{menurole},
             modu_role = #{modurole},
             butt_role = #{buttrole},
@@ -170,7 +165,7 @@
 
     <update id="updatePassword">
         UPDATE `sys_user` SET
-            `password` = #{password}
+            `pass_word` = #{password}
         WHERE id = #{id}
     </update>
 

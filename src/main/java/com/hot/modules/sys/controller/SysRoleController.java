@@ -1,7 +1,7 @@
 package com.hot.modules.sys.controller;
 
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.hot.common.page.PageInfo;
 import com.hot.common.result.Result;
 import com.hot.common.result.ResultCode;
 import com.hot.common.util.UserUtils;

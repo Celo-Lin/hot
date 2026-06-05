@@ -6,7 +6,7 @@ import com.hot.common.result.ResultCode;
 import com.hot.common.util.UserUtils;
 import com.hot.modules.sys.entity.SysUser;
 import com.hot.modules.sys.service.SysUserService;
-import com.github.pagehelper.PageInfo;
+import com.hot.common.page.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
