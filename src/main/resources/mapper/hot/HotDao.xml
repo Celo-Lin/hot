@@ -16,8 +16,6 @@
 	<select id="getBasicList" resultType="com.hot.modules.hot.entity.HotBasic">
 		SELECT
 			id,
-			hot_id AS 'hotId',
-			channel,
 			hots_id AS 'hotsId',
 			nickname,
 			country,
@@ -30,9 +28,9 @@
 			avg_play_count AS 'avgPlayCount',
 			avg_iact_rate AS 'avgIactRate',
 			long_avg_views AS 'longAvgViews',
-			 long_iact_rate AS 'longIactRate',
-			 short_avg_views AS 'shortAvgViews',
-			 score_level AS 'scoreLevel'
+			long_iact_rate AS 'longIactRate',
+			short_avg_views AS 'shortAvgViews',
+			score_level AS 'scoreLevel'
 		 FROM `a_hot_basic`
 		 WHERE del_flag = 0 AND hot_id = #{hotId}
 	</select>
@@ -41,39 +39,52 @@
 		SELECT
 			a.state,
 			d.`label` AS 'states',
-			a.create_date AS 'createDate',
+			a.create_time AS 'createTime',
 			b.id AS 'id',
 			b.channel,
 			b.nickname,
 			b.country,
 			b.contact,
 			b.avg_play_count AS 'avgPlayCount',
-			b.score_level AS 'scoreLevel'
+			b.score_level AS 'scoreLevel',
+			b.`is_match` AS 'isMatch',
+			d1.`label` AS 'isMatchs'
 		FROM `a_hot` a
 		LEFT JOIN `a_hot_basic` b ON b.`hot_id` = a.`id` AND b.`del_flag` = 0
-		LEFT JOIN `sys_dict` d ON d.`label` = a.`state` AND d.`type` = 'hot_state' AND d.`del_flag` = 0
+		LEFT JOIN `a_hot_coop` c ON c.`hotb_id` = b.`id` AND c.`del_flag` = 0
+		LEFT JOIN `a_hot_coop_product` c1 ON c1.`coop_id` = c.`id` AND c1.`del_flag` = 0
+		LEFT JOIN `sys_dict` d ON d.`value` = a.`state` AND d.`type` = 'hot_coop_state' AND d.`del_flag` = 0
+		LEFT JOIN `sys_dict` d1 ON d1.`value` = b.`is_match` AND d1.`type` = 'is_match' AND d1.`del_flag` = 0
 		<where>
-			<if test="name != null and name != ''">
-				AND `name` LIKE CONCAT('%',#{name},'%')
-			</if>
-			<if test="archName != null and archName != ''">
-				AND `arch_name` LIKE CONCAT('%',#{archName},'%')
-			</if>
-			<if test="state != null">
-				AND `state` = #{state}
-			</if>
 			<if test="country != null and country != ''">
 				AND b.`country` LIKE CONCAT('%',#{country},'%')
 			</if>
-			<if test="country != null and country != ''">
-				AND b.`hot_level` LIKE CONCAT('%',#{country},'%')
+			<if test="hotLevel != null and hotLevel != ''">
+				AND b.`hot_level` LIKE CONCAT('%',#{hotLevel},'%')
 			</if>
-			<if test="country != null and country != ''">
-				AND b.`hot_type` LIKE CONCAT('%',#{country},'%')
+			<if test="hotType != null and hotType != ''">
+				AND b.`hot_type` LIKE CONCAT('%',#{hotType},'%')
 			</if>
-
+			<if test="channel != null and channel !=''">
+				AND b.`channel` = #{channel}
+			</if>
+			<if test="hotsId != null and hotsId != ''">
+				AND b.`hots_id` LIKE CONCAT('%',#{hotsId},'%')
+			</if>
+			<if test="isMatch != null and isMatch !=''">
+				AND b.`is_match` = #{isMatch}
+			</if>
+			<if test="state != null and state !=''">
+				AND a.`state` = #{state}
+			</if>
+			<if test="productName != null and productName != ''">
+				AND c1.`product_name` LIKE CONCAT('%',#{productName},'%')
+			</if>
+			<if test="coopFee != null and coopFee !=''">
+				AND c1.`coop_fee` &lt;= #{coopFee}
+			</if>
 		</where>
-		ORDER BY id DESC
+		GROUP BY b.`id` ORDER BY a.create_time DESC
 	</select>
 
 	<insert id="insert" parameterType="com.hot.modules.hot.entity.Hot" useGeneratedKeys="true" keyProperty="id">
@@ -100,7 +111,17 @@
 		UPDATE `a_hot` SET
 			`name` = #{name},
 			`arch_name` = #{archName},
-			`state` = #{state}
+			`state` = #{state},
+			`update_user` = #{updateUser},
+			`update_time` = NOW()
+		WHERE id = #{id}
+	</update>
+
+	<update id="state" parameterType="com.hot.modules.hot.entity.Hot">
+		UPDATE `a_hot` SET
+			`state` = #{state},
+			`update_user` = #{updateUser},
+			`update_time` = NOW()
 		WHERE id = #{id}
 	</update>
 

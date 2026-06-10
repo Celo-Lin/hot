@@ -10,11 +10,7 @@ import com.hot.modules.hot.entity.HotBasic;
 import com.hot.modules.hot.service.HotService;
 import com.hot.modules.sys.entity.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -40,12 +36,21 @@ public class HotController {
     }
 
     @PostMapping("/save")
-    public Result<?> save(@ModelAttribute Hot hot, HttpServletRequest request) throws Exception {
+    public Result<?> save(@RequestBody Hot hot, HttpServletRequest request) throws Exception {
         SysUser user = currentUser(request);
         hot.setCreateUser(user.getId());
         hot.setUpdateUser(user.getId());
         return hotService.save(hot,user.getId()) > 0 ? Result.success() : Result.of(ResultCode.FAIL);
     }
+
+    @PostMapping("/state")
+    public Result<?> state(@ModelAttribute Hot hot, HttpServletRequest request) throws Exception {
+        SysUser user = currentUser(request);
+        hot.setCreateUser(user.getId());
+        hot.setUpdateUser(user.getId());
+        return hotService.state(hot) > 0 ? Result.success() : Result.of(ResultCode.FAIL);
+    }
+
 
     private SysUser currentUser(HttpServletRequest request) throws Exception {
         SysUser user = UserUtils.getCurrentUser(request);

@@ -35,7 +35,7 @@ public class HotService {
                 }
             }
         }
-        return hotDao.get(id);
+        return hot;
     }
 
     public List<Hot> list(Hot hot) {
@@ -114,4 +114,7 @@ public class HotService {
         return i;
     }
 
+    public int state(Hot hot) {
+        return hotDao.state(hot);
+    }
 }

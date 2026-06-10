@@ -73,7 +73,6 @@
 			a.bd_name AS 'bdName',
 			a.conn_time AS 'connTime',
 			a.agcc_time AS 'agccTime',
-			a.hotb_id AS 'hotbId',
 			a.hots_id AS 'hotsId',
 			a.channel,
 			a.country,

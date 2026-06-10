@@ -20,10 +20,13 @@ public interface HotDao {
 
     int update(Hot hot);
 
+    int state(Hot hot);
+
     HotBasic getBasic(@Param("hotsId")String hotsId, @Param("channel")String channel);
 
     void insertBasicList(@Param("id") Integer id, @Param("list")List<HotBasic> list);
 
     void updateBasic(HotBasic basictk);
+
 
 }

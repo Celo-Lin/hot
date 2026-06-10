@@ -9,11 +9,7 @@ import com.hot.modules.hot.entity.HotInvit;
 import com.hot.modules.hot.service.HotInvitService;
 import com.hot.modules.sys.entity.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -40,7 +36,7 @@ public class HotInvitController {
     }
 
     @PostMapping("/save")
-    public Result<?> save(@ModelAttribute HotInvit invit, HttpServletRequest request) throws Exception {
+    public Result<?> save(@RequestBody HotInvit invit, HttpServletRequest request) throws Exception {
         SysUser user = currentUser(request);
         List<HotInvit> list = invit.getHotsList();
         if (list == null || list.size() < 1) {
