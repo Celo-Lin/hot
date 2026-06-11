@@ -45,7 +45,7 @@ public class SysUserController {
     public Result<Void> save(HttpServletRequest request, @ModelAttribute SysUser sysUser) {
         SysUser u = UserUtils.getCurrentUser(request);
         if (u == null) return Result.of(ResultCode.NO_LOGIN);
-
+        sysUser.setUserType(null);// 用户类型
         sysUser.setCreateUser(u.getId());
         int rows = userService.save(sysUser);
         return rows > 0 ? Result.success() : Result.of(ResultCode.FAIL);

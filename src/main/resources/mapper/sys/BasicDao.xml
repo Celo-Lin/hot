@@ -7,7 +7,7 @@
 	</select>
 
 	<select id="data" resultType="java.util.Map">
-		CALL basic_data(#{userid},#{name});
+		CALL basic_data(#{userid},#{name},#{param});
 	</select>
 
 	<select id="user" resultType="com.hot.modules.sys.entity.SysUser">

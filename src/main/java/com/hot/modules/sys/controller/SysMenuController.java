@@ -1,5 +1,7 @@
 package com.hot.modules.sys.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.hot.common.page.PageInfo;
 import com.hot.common.result.Result;
 import com.hot.common.result.ResultCode;
 import com.hot.common.util.UserUtils;
@@ -58,7 +60,8 @@ public class SysMenuController {
 
     @PostMapping("/rolelist")
     public Result<?> rolelist(@ModelAttribute SysRole role) {
-        return Result.success(menuService.rolelist(role));
+        startPage(role.getPageNum(), role.getPageSize());
+        return Result.success(new PageInfo<>(menuService.rolelist(role)));
     }
 
     @PostMapping("/rolesave")
@@ -73,6 +76,12 @@ public class SysMenuController {
         role.setId(id);
         role.setCreateUser(currentUserId(request));
         return menuService.roledelete(role) > 0 ? Result.success() : Result.of(ResultCode.FAIL);
+    }
+
+    private void startPage(Integer pageNum, Integer pageSize) {
+        int p = pageNum == null || pageNum < 1 ? 1 : pageNum;
+        int s = pageSize == null || pageSize < 1 ? 10 : pageSize;
+        PageHelper.startPage(p, s);
     }
 
     private String currentUserId(HttpServletRequest request) {

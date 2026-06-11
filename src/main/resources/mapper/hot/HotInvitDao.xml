@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hot.modules.hot.dao.HotInvitDao">
+
+	<resultMap id="getMap" type="com.hot.modules.hot.entity.HotInvit">
+		<id property="id" column="id" />
+		<result property="docNum" column="docNum" />
+		<result property="bdName" column="bdName" />
+		<result property="connTime" column="connTime" />
+		<result property="agccTime" column="agccTime" />
+		<collection property="hotsList" ofType="com.hot.modules.hot.entity.HotInvit">
+			<result property="hotbId" column="hots.hotbId"/>
+			<result property="hotsId" column="hots.hotsId"/>
+			<result property="channel" column="hots.channel"/>
+			<result property="country" column="hots.country"/>
+		</collection>
+		<collection property="demaList" ofType="com.hot.modules.hot.entity.HotInvitDema">
+			<id property="id" column="dema.id"/>
+			<result property="productId" column="dema.productId"/>
+			<result property="productName" column="dema.productName"/>
+			<result property="productModel" column="dema.productModel"/>
+			<result property="productColor" column="dema.productColor"/>
+			<result property="coopChannel" column="dema.coopChannel"/>
+			<result property="releAcc" column="dema.releAcc"/>
+			<result property="releNum" column="dema.releNum"/>
+			<result property="videoType" column="dema.videoType"/>
+			<result property="videoAuth" column="dema.videoAuth"/>
+			<result property="authPupo" column="dema.authPupo"/>
+			<result property="adAuth" column="dema.adAuth"/>
+			<result property="coopForm" column="dema.coopForm"/>
+			<result property="commRate" column="dema.commRate"/>
+			<result property="coopFee" column="dema.coopFee"/>
+			<result property="platForm" column="dema.platForm"/>
+		</collection>
+	</resultMap>
+
+	<select id="get" resultMap="getMap">
+		SELECT
+			a.id,
+			a.doc_num AS 'docNum',
+			a.bd_name AS 'bdName',
+			a.conn_time AS 'connTime',
+			a.agcc_time AS 'agccTime',
+			a.hotb_id AS 'hots.hotbId',
+			a.hots_id AS 'hots.hotsId',
+			a.channel AS 'hots.channel',
+			a.country AS 'hots.country',
+			b.id AS 'dema.id',
+			b.product_id AS 'dema.productId',
+			b.product_name AS 'dema.productName',
+			b.product_model AS 'dema.productModel',
+			b.product_color AS 'dema.productColor',
+			b.coop_channel AS 'dema.coopChannel',
+			b.rele_acc AS 'dema.releAcc',
+			b.rele_num AS 'dema.releNum',
+			b.video_type AS 'dema.videoType',
+			b.video_auth AS 'dema.videoAuth',
+			b.auth_pupo AS 'dema.authPupo',
+			b.ad_auth AS 'dema.adAuth',
+			b.coop_form AS 'dema.coopForm',
+			b.comm_rate AS 'dema.commRate',
+			b.coop_fee AS 'dema.coopFee',
+			b.plat_form AS 'dema.platForm'
+		FROM `a_hot_invit` a
+		LEFT JOIN `a_hot_invit_dema` b ON b.`invit_id` = a.`id` AND b.`del_flag` = 0
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="list" resultType="com.hot.modules.hot.entity.HotInvit">
+		SELECT
+			a.id,
+			a.doc_num AS 'docNum',
+			a.bd_name AS 'bdName',
+			a.conn_time AS 'connTime',
+			a.agcc_time AS 'agccTime',
+			a.hots_id AS 'hotsId',
+			a.channel,
+			a.country,
+			a.state,
+			d.label AS 'states'
+		FROM `a_hot_invit` a
+		LEFT JOIN `sys_dict` d ON d.value = a.state AND d.type = 'hot_state' AND d.del_flag = 0
+		WHERE a.`del_flag` = 0
+		<if test="country != null and country != ''">
+			AND a.`country` LIKE CONCAT('%',#{country},'%')
+		</if>
+		<if test="bdName != null and bdName != ''">
+			AND a.`bd_name` LIKE CONCAT('%',#{bdName},'%')
+		</if>
+		<if test="state != null and state != ''">
+			AND a.`state` = #{state}
+		</if>
+		<if test="channel != null and channel != ''">
+			AND a.`channel` = #{channel}
+		</if>
+		<if test="hotsId != null and hotsId != ''">
+			AND a.`hots_id` LIKE CONCAT('%',#{hotsId},'%')
+		</if>
+		ORDER BY a.id DESC
+	</select>
+
+	<insert id="insert" parameterType="com.hot.modules.hot.entity.HotInvit" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `a_hot_invit` (
+			`doc_num`,
+			`bd_name`,
+			`conn_time`,
+			`agcc_time`,
+			`hotb_id`,
+			`hots_id`,
+			`channel`,
+			`country`,
+			`create_user`,
+			`create_time`,
+			`update_user`,
+			`update_time`
+		) VALUES (
+			#{docNum},
+			#{bdName},
+			#{connTime},
+			#{agccTime},
+			#{hotbId},
+			#{hotsId},
+			#{channel},
+			#{country},
+			#{createUser},
+			NOW(),
+			#{updateUser},
+			NOW()
+		)
+	</insert>
+
+	<update id="update" parameterType="com.hot.modules.hot.entity.HotInvit">
+		UPDATE `a_hot_invit` SET
+			`conn_time` = #{connTime},
+			`agcc_time` = #{agccTime},
+			`hotb_id` = #{hotbId},
+			`hots_id` = #{hotsId},
+			`channel` = #{channel},
+			`country` = #{country},
+			`update_user` = #{updateUser},
+			`update_time` = NOW()
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		UPDATE `a_hot_invit` SET
+			`del_flag` = 1,
+			`update_user` = #{userid},
+			`update_time` = NOW()
+		WHERE id = #{id}
+	</update>
+
+	<insert id="insertDemaList">
+		INSERT INTO `a_hot_invit_dema` (
+			`invit_id`,
+			`product_id`,
+			`product_name`,
+			`product_model`,
+			`product_color`,
+			`coop_channel`,
+			`rele_acc`,
+			`rele_num`,
+			`video_type`,
+			`video_auth`,
+			`auth_pupo`,
+			`ad_auth`,
+			`coop_form`,
+			`comm_rate`,
+			`coop_fee`,
+			`plat_form`,
+			`create_user`,
+			`create_time`,
+			`update_user`,
+			`update_time`
+		) VALUES
+		<foreach collection="demaList" item="item" separator=",">
+			(
+				#{id},
+				#{item.productId},
+				#{item.productName},
+				#{item.productModel},
+				#{item.productColor},
+				#{item.coopChannel},
+				#{item.releAcc},
+				#{item.releNum},
+				#{item.videoType},
+				#{item.videoAuth},
+				#{item.authPupo},
+				#{item.adAuth},
+				#{item.coopForm},
+				#{item.commRate},
+				#{item.coopFee},
+				#{item.platForm},
+				#{userid},
+				NOW(),
+				#{userid},
+				NOW()
+			)
+		</foreach>
+	</insert>
+
+	<update id="deleteDema">
+		UPDATE `a_hot_invit_dema` SET
+			`del_flag` = 1,
+			`update_user` = #{userid},
+			`update_time` = NOW()
+		WHERE invit_id = #{id}
+	</update>
+
+	<insert id="insertDema">
+		INSERT INTO `a_hot_invit_dema` (
+			`invit_id`,
+			`product_id`,
+			`product_name`,
+			`product_model`,
+			`product_color`,
+			`coop_channel`,
+			`rele_acc`,
+			`rele_num`,
+			`video_type`,
+			`video_auth`,
+			`auth_pupo`,
+			`ad_auth`,
+			`coop_form`,
+			`comm_rate`,
+			`coop_fee`,
+			`plat_form`,
+			`create_user`,
+			`create_time`,
+			`update_user`,
+			`update_time`
+		) VALUES (
+			#{invitId},
+			#{productId},
+			#{productName},
+			#{productModel},
+			#{productColor},
+			#{coopChannel},
+			#{releAcc},
+			#{releNum},
+			#{videoType},
+			#{videoAuth},
+			#{authPupo},
+			#{adAuth},
+			#{coopForm},
+			#{commRate},
+			#{coopFee},
+			#{platForm},
+			#{createUser},
+			NOW(),
+			#{updateUser},
+			NOW()
+		)
+	</insert>
+
+	<update id="updateDema">
+		UPDATE `a_hot_invit_dema` SET
+			`product_id` = #{productId},
+			`product_name` = #{productName},
+			`product_model` = #{productModel},
+			`product_color` = #{productColor},
+			`coop_channel` = #{coopChannel},
+			`rele_acc` = #{releAcc},
+			`rele_num` = #{releNum},
+			`video_type` = #{videoType},
+			`video_auth` = #{videoAuth},
+			`auth_pupo` = #{authPupo},
+			`ad_auth` = #{adAuth},
+			`coop_form` = #{coopForm},
+			`comm_rate` = #{commRate},
+			`coop_fee` = #{coopFee},
+			`plat_form` = #{platForm},
+			`update_user` = #{updateUser},
+			`update_time` = NOW(),
+			`del_flag` = 0
+		WHERE id = #{id}
+	</update>
+
+	<update id="close">
+		UPDATE `a_hot_invit` SET
+			`state` = 2,
+			`update_user` = #{userid},
+			`update_time` = NOW()
+		WHERE id IN
+		<foreach item="item" collection="ids" separator="," close="">
+			#{item}
+		</foreach>
+	</update>
+
+
+</mapper>

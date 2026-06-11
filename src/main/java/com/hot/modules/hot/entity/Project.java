@@ -1,16 +1,17 @@
-package com.hot.modules.sys.entity;
+package com.hot.modules.hot.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hot.common.entity.BaseEntity;
 import lombok.Data;
 
+/**
+ * 项目
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
-public class BasicData extends BaseEntity {
+public class Project extends BaseEntity {
 
-    private String userid;
-    private String id;
+    private Integer id;
     private String name;
-    private String param;
 
 }
