@@ -25,8 +25,8 @@ public class AuthController {
     @PostMapping("/login")
     public Result<String> login(HttpServletRequest request,
             @RequestParam(required = true) String loginname,
-            @RequestParam(required = true) String passwork) {
-        String token = sysUserService.login(loginname, passwork, StringUtils.getRemoteAddr(request));
+            @RequestParam(required = true) String password) {
+        String token = sysUserService.login(loginname, password, StringUtils.getRemoteAddr(request));
         return Result.success(token);
     }
 
